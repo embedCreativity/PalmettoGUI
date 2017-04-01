@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt.ui'
 #
-# Created: Sat Mar 25 19:17:07 2017
+# Created: Sat Apr  1 10:12:20 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -23,7 +23,7 @@ class Ui_Dialog(object):
         self.pbC.setGeometry(QtCore.QRect(240, 30, 99, 27))
         self.pbC.setObjectName("pbC")
         self.lblFoo = QtGui.QLabel(Dialog)
-        self.lblFoo.setGeometry(QtCore.QRect(150, 90, 68, 17))
+        self.lblFoo.setGeometry(QtCore.QRect(150, 90, 91, 17))
         self.lblFoo.setObjectName("lblFoo")
 
         self.retranslateUi(Dialog)
