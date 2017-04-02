@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt.ui'
 #
-# Created: Sun Apr  2 07:24:09 2017
+# Created: Sun Apr  2 08:11:10 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -20,13 +20,13 @@ class Ui_Dialog(object):
         self.pbStop.setGeometry(QtCore.QRect(140, 80, 99, 27))
         self.pbStop.setObjectName("pbStop")
         self.pbRotateRight = QtGui.QPushButton(Dialog)
-        self.pbRotateRight.setGeometry(QtCore.QRect(250, 70, 99, 27))
+        self.pbRotateRight.setGeometry(QtCore.QRect(250, 80, 99, 27))
         self.pbRotateRight.setObjectName("pbRotateRight")
         self.lblVoltage = QtGui.QLabel(Dialog)
         self.lblVoltage.setGeometry(QtCore.QRect(570, 410, 61, 20))
         self.lblVoltage.setObjectName("lblVoltage")
         self.pbRotateLeft = QtGui.QPushButton(Dialog)
-        self.pbRotateLeft.setGeometry(QtCore.QRect(30, 70, 99, 27))
+        self.pbRotateLeft.setGeometry(QtCore.QRect(30, 80, 99, 27))
         self.pbRotateLeft.setObjectName("pbRotateLeft")
         self.txtBattery = QtGui.QLabel(Dialog)
         self.txtBattery.setGeometry(QtCore.QRect(510, 410, 61, 17))
@@ -39,6 +39,21 @@ class Ui_Dialog(object):
         self.txtLED = QtGui.QLabel(Dialog)
         self.txtLED.setGeometry(QtCore.QRect(550, 190, 31, 20))
         self.txtLED.setObjectName("txtLED")
+        self.pbBack = QtGui.QPushButton(Dialog)
+        self.pbBack.setGeometry(QtCore.QRect(140, 110, 99, 27))
+        self.pbBack.setObjectName("pbBack")
+        self.sldPower = QtGui.QSlider(Dialog)
+        self.sldPower.setGeometry(QtCore.QRect(490, 220, 29, 160))
+        self.sldPower.setMaximum(1000)
+        self.sldPower.setOrientation(QtCore.Qt.Vertical)
+        self.sldPower.setObjectName("sldPower")
+        self.txtPower = QtGui.QLabel(Dialog)
+        self.txtPower.setGeometry(QtCore.QRect(480, 190, 51, 20))
+        self.txtPower.setObjectName("txtPower")
+        self.lblPower = QtGui.QLabel(Dialog)
+        self.lblPower.setGeometry(QtCore.QRect(470, 380, 68, 17))
+        self.lblPower.setAlignment(QtCore.Qt.AlignCenter)
+        self.lblPower.setObjectName("lblPower")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -52,4 +67,7 @@ class Ui_Dialog(object):
         self.pbRotateLeft.setText(QtGui.QApplication.translate("Dialog", "Rotate Left", None, QtGui.QApplication.UnicodeUTF8))
         self.txtBattery.setText(QtGui.QApplication.translate("Dialog", "Battery:", None, QtGui.QApplication.UnicodeUTF8))
         self.txtLED.setText(QtGui.QApplication.translate("Dialog", "LED", None, QtGui.QApplication.UnicodeUTF8))
+        self.pbBack.setText(QtGui.QApplication.translate("Dialog", "Back", None, QtGui.QApplication.UnicodeUTF8))
+        self.txtPower.setText(QtGui.QApplication.translate("Dialog", "Power", None, QtGui.QApplication.UnicodeUTF8))
+        self.lblPower.setText(QtGui.QApplication.translate("Dialog", "0", None, QtGui.QApplication.UnicodeUTF8))
 

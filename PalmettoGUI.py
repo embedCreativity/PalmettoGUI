@@ -18,7 +18,9 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         self.pbStop.clicked.connect(self.Stop)
         self.pbRotateRight.clicked.connect(self.RotateRight)
         self.pbRotateLeft.clicked.connect(self.RotateLeft)
+        self.pbBack.clicked.connect(self.Back)
         self.sldLED.valueChanged.connect(self.SetLED)
+        self.sldPower.valueChanged.connect(self.UpdatePower)
 
         self.API = PalmettoAPI()
         self.API.send('mon')
@@ -29,17 +31,36 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
 
 
     def Go(self):
-        self.Send('setservo 1 0')
+        self.Send('setmotor 1 ' + str(self.sldPower.value()))
+        self.Send('setmotor 2 ' + str(self.sldPower.value()))
+        self.Send('setmotor 3 ' + str(-1 * self.sldPower.value()))
+        self.Send('setmotor 4 ' + str(-1 * self.sldPower.value()))
     def Stop(self):
-        self.Send('setservo 1 1500')
+        self.Send('setmotor 1 0')
+        self.Send('setmotor 2 0')
+        self.Send('setmotor 3 0')
+        self.Send('setmotor 4 0')
+    def Back(self):
+        self.Send('setmotor 1 ' + str(-1 * self.sldPower.value()))
+        self.Send('setmotor 2 ' + str(-1 * self.sldPower.value()))
+        self.Send('setmotor 3 ' + str(self.sldPower.value()))
+        self.Send('setmotor 4 ' + str(self.sldPower.value()))
     def RotateRight(self):
-        self.Send('pivotright')
+        self.Send('setmotor 1 ' + str(self.sldPower.value()))
+        self.Send('setmotor 2 ' + str(self.sldPower.value()))
+        self.Send('setmotor 3 ' + str(self.sldPower.value()))
+        self.Send('setmotor 4 ' + str(self.sldPower.value()))
     def RotateLeft(self):
-        self.Send('pivotleft')
+        self.Send('setmotor 1 ' + str(-1 * self.sldPower.value()))
+        self.Send('setmotor 2 ' + str(-1 * self.sldPower.value()))
+        self.Send('setmotor 3 ' + str(-1 * self.sldPower.value()))
+        self.Send('setmotor 4 ' + str(-1 * self.sldPower.value()))
     def SetLED(self):
         self.Send('setled ' + str(self.sldLED.value()))
 
 
+    def UpdatePower(self):
+        self.lblPower.setText(str(self.sldPower.value()))
 
     def Send(self, cmd):
         self.ProcessResponse(self.API.send(cmd))
