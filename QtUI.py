@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt.ui'
 #
-# Created: Sat Apr  1 10:12:20 2017
+# Created: Sat Apr  1 20:29:18 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -13,26 +13,30 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
         Dialog.resize(400, 300)
-        self.pbA = QtGui.QPushButton(Dialog)
-        self.pbA.setGeometry(QtCore.QRect(20, 30, 99, 27))
-        self.pbA.setObjectName("pbA")
-        self.pbB = QtGui.QPushButton(Dialog)
-        self.pbB.setGeometry(QtCore.QRect(130, 30, 99, 27))
-        self.pbB.setObjectName("pbB")
-        self.pbC = QtGui.QPushButton(Dialog)
-        self.pbC.setGeometry(QtCore.QRect(240, 30, 99, 27))
-        self.pbC.setObjectName("pbC")
+        self.pbGo = QtGui.QPushButton(Dialog)
+        self.pbGo.setGeometry(QtCore.QRect(140, 50, 99, 27))
+        self.pbGo.setObjectName("pbGo")
+        self.pbStop = QtGui.QPushButton(Dialog)
+        self.pbStop.setGeometry(QtCore.QRect(140, 80, 99, 27))
+        self.pbStop.setObjectName("pbStop")
+        self.pbRotateRight = QtGui.QPushButton(Dialog)
+        self.pbRotateRight.setGeometry(QtCore.QRect(250, 70, 99, 27))
+        self.pbRotateRight.setObjectName("pbRotateRight")
         self.lblFoo = QtGui.QLabel(Dialog)
-        self.lblFoo.setGeometry(QtCore.QRect(150, 90, 91, 17))
+        self.lblFoo.setGeometry(QtCore.QRect(300, 260, 91, 17))
         self.lblFoo.setObjectName("lblFoo")
+        self.pbRotateLeft = QtGui.QPushButton(Dialog)
+        self.pbRotateLeft.setGeometry(QtCore.QRect(30, 70, 99, 27))
+        self.pbRotateLeft.setObjectName("pbRotateLeft")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Dialog", None, QtGui.QApplication.UnicodeUTF8))
-        self.pbA.setText(QtGui.QApplication.translate("Dialog", "Foo", None, QtGui.QApplication.UnicodeUTF8))
-        self.pbB.setText(QtGui.QApplication.translate("Dialog", "Bar", None, QtGui.QApplication.UnicodeUTF8))
-        self.pbC.setText(QtGui.QApplication.translate("Dialog", "Baz", None, QtGui.QApplication.UnicodeUTF8))
+        self.pbGo.setText(QtGui.QApplication.translate("Dialog", "Go", None, QtGui.QApplication.UnicodeUTF8))
+        self.pbStop.setText(QtGui.QApplication.translate("Dialog", "Stop", None, QtGui.QApplication.UnicodeUTF8))
+        self.pbRotateRight.setText(QtGui.QApplication.translate("Dialog", "Rotate Right", None, QtGui.QApplication.UnicodeUTF8))
         self.lblFoo.setText(QtGui.QApplication.translate("Dialog", "Untouched", None, QtGui.QApplication.UnicodeUTF8))
+        self.pbRotateLeft.setText(QtGui.QApplication.translate("Dialog", "Rotate Left", None, QtGui.QApplication.UnicodeUTF8))
 
