@@ -22,10 +22,12 @@ class PalmettoAPI:
         self.data = self.sock.recv(100)
         try:
             values = self.data.split(',')
+            status = int(values[0],16)
             voltage = (int(values[1],16) / 4096.0) * 19.8
-            print 'Battery: {:.2f}V'.format(voltage)
+            return (status,voltage)
         except:
             print "ERROR: parsing response"
+            return (-1,-1)
 
     def close(self):
         self.sock.close()

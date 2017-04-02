@@ -18,19 +18,39 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         self.pbStop.clicked.connect(self.Stop)
         self.pbRotateRight.clicked.connect(self.RotateRight)
         self.pbRotateLeft.clicked.connect(self.RotateLeft)
+        self.sldLED.valueChanged.connect(self.SetLED)
+
         self.API = PalmettoAPI()
         self.API.send('mon')
-        self.API.send('setled 100')
+        self.API.send('setled 3')
+        self.status = -1
+        self.voltage = -1
+
+
 
     def Go(self):
-        self.API.send('setservo 1 0')
+        self.Send('setservo 1 0')
     def Stop(self):
-        self.API.send('setservo 1 1500')
+        self.Send('setservo 1 1500')
     def RotateRight(self):
-        self.API.send('pivotright')
+        self.Send('pivotright')
     def RotateLeft(self):
-        self.API.send('pivotleft')
+        self.Send('pivotleft')
+    def SetLED(self):
+        self.Send('setled ' + str(self.sldLED.value()))
 
+
+
+    def Send(self, cmd):
+        self.ProcessResponse(self.API.send(cmd))
+
+    def ProcessResponse(self, response):
+        self.status = response[0]
+        self.voltage = response[1]
+        if -1 == self.voltage:
+            self.lblVoltage.setText('?')
+        else:
+            self.lblVoltage.setText('{:.2f}V'.format(self.voltage))
 
 
 
