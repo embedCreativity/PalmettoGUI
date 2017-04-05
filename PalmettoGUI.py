@@ -26,61 +26,42 @@ class HeartBeat( QtCore.QThread ):
 
     def __init__(self):
         QtCore.QThread.__init__(self)
+        self.lock = QtCore.QMutex()
 
     def run(self):
         while True:
             for i in range(100):
+                # Make sure we've returned from comms before calling again
+                self.lock.lock()
                 self.heartBeat.emit(i)
-                time.sleep(0.1)
+                time.sleep(0.01)
 
 class MainDialog(QDialog, QtUI.Ui_Dialog):
 
     def __init__(self, parent=None):
         super(MainDialog, self).__init__(parent)
         self.setupUi(self)
-        self.pbGo.clicked.connect(self.Go)
-        self.pbStop.clicked.connect(self.Stop)
-        self.pbRotateRight.clicked.connect(self.RotateRight)
-        self.pbRotateLeft.clicked.connect(self.RotateLeft)
-        self.pbBack.clicked.connect(self.Back)
         self.chkPower.clicked.connect(self.MotorPower)
         self.sldLED.valueChanged.connect(self.SetLED)
         self.sldPower.valueChanged.connect(self.UpdatePower)
 
+        # set up the heartbeat callback
         self.heartBeat = HeartBeat()
-        self.heartBeat.heartBeat.connect(self.UpdateProgressBar)
-        self.heartBeat.start()
+        self.heartBeat.heartBeat.connect(self.ServiceHeartBeat)
+        self.heartBeat.start() # start the heartbeat thread!
 
+        # This is the embedcreativity API
         self.API = PalmettoAPI()
         self.API.send('setled 3')
         self.status = -1
         self.voltage = -1
 
-    def Go(self):
-        self.Send('setmotor 1 ' + str(self.sldPower.value()))
-        self.Send('setmotor 2 ' + str(self.sldPower.value()))
-        self.Send('setmotor 3 ' + str(-1 * self.sldPower.value()))
-        self.Send('setmotor 4 ' + str(-1 * self.sldPower.value()))
-    def Stop(self):
-        self.Send('setmotor 1 0')
-        self.Send('setmotor 2 0')
-        self.Send('setmotor 3 0')
-        self.Send('setmotor 4 0')
-    def Back(self):
-        self.Send('setmotor 1 ' + str(-1 * self.sldPower.value()))
-        self.Send('setmotor 2 ' + str(-1 * self.sldPower.value()))
-        self.Send('setmotor 3 ' + str(self.sldPower.value()))
-        self.Send('setmotor 4 ' + str(self.sldPower.value()))
-    def RotateRight(self):
-        self.Send('setmotor 1 ' + str(self.sldPower.value()))
-        self.Send('setmotor 2 ' + str(self.sldPower.value()))
-        self.Send('setmotor 3 ' + str(self.sldPower.value()))
-        self.Send('setmotor 4 ' + str(self.sldPower.value()))
-    def RotateLeft(self):
-        self.Send('setmotor 1 ' + str(-1 * self.sldPower.value()))
-        self.Send('setmotor 2 ' + str(-1 * self.sldPower.value()))
-        self.Send('setmotor 3 ' + str(-1 * self.sldPower.value()))
-        self.Send('setmotor 4 ' + str(-1 * self.sldPower.value()))
+        # Status variables to keep track of what we've sent the board
+        self.stateGo = False
+        self.stateRotateRight = False
+        self.stateRotateLeft = False
+        self.stateBack = False
+
     def SetLED(self):
         self.Send('setled ' + str(self.sldLED.value()))
     def MotorPower(self):
@@ -89,8 +70,60 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         else:
             self.Send('moff')
 
-    def UpdateProgressBar(self, value):
-        self.progressBar.setValue(value)
+    def ServiceHeartBeat(self, value):
+        if self.pbGo.isDown() != self.stateGo:
+            self.stateGo = self.pbGo.isDown() # update state
+            if self.pbGo.isDown():
+                self.Send('setmotor 1 ' + str(self.sldPower.value()))
+                self.Send('setmotor 2 ' + str(self.sldPower.value()))
+                self.Send('setmotor 3 ' + str(-1 * self.sldPower.value()))
+                self.Send('setmotor 4 ' + str(-1 * self.sldPower.value()))
+            else:
+                self.Send('setmotor 1 0')
+                self.Send('setmotor 2 0')
+                self.Send('setmotor 3 0')
+                self.Send('setmotor 4 0')
+
+        if self.pbBack.isDown() != self.stateBack:
+            self.stateBack = self.pbBack.isDown() # update state
+            if self.pbBack.isDown():
+                self.Send('setmotor 1 ' + str(-1 * self.sldPower.value()))
+                self.Send('setmotor 2 ' + str(-1 * self.sldPower.value()))
+                self.Send('setmotor 3 ' + str(self.sldPower.value()))
+                self.Send('setmotor 4 ' + str(self.sldPower.value()))
+            else:
+                self.Send('setmotor 1 0')
+                self.Send('setmotor 2 0')
+                self.Send('setmotor 3 0')
+                self.Send('setmotor 4 0')
+
+        if self.pbRotateLeft.isDown() != self.stateRotateLeft:
+            self.stateRotateLeft = self.pbRotateLeft.isDown() # update state
+            if self.pbRotateLeft.isDown():
+                self.Send('setmotor 1 ' + str(-1 * self.sldPower.value()))
+                self.Send('setmotor 2 ' + str(-1 * self.sldPower.value()))
+                self.Send('setmotor 3 ' + str(-1 * self.sldPower.value()))
+                self.Send('setmotor 4 ' + str(-1 * self.sldPower.value()))
+            else:
+                self.Send('setmotor 1 0')
+                self.Send('setmotor 2 0')
+                self.Send('setmotor 3 0')
+                self.Send('setmotor 4 0')
+
+        if self.pbRotateRight.isDown() != self.stateRotateRight:
+            self.stateRotateRight = self.pbRotateRight.isDown() # update state
+            if self.pbRotateRight.isDown():
+                self.Send('setmotor 1 ' + str(self.sldPower.value()))
+                self.Send('setmotor 2 ' + str(self.sldPower.value()))
+                self.Send('setmotor 3 ' + str(self.sldPower.value()))
+                self.Send('setmotor 4 ' + str(self.sldPower.value()))
+            else:
+                self.Send('setmotor 1 0')
+                self.Send('setmotor 2 0')
+                self.Send('setmotor 3 0')
+                self.Send('setmotor 4 0')
+
+        self.heartBeat.lock.unlock() # allow heartbeat thread to continue
 
     def UpdatePower(self):
         self.lblPower.setText(str(self.sldPower.value()))

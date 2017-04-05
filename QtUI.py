@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt.ui'
 #
-# Created: Tue Apr  4 23:24:59 2017
+# Created: Wed Apr  5 00:27:55 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -14,11 +14,8 @@ class Ui_Dialog(object):
         Dialog.setObjectName("Dialog")
         Dialog.resize(633, 439)
         self.pbGo = QtGui.QPushButton(Dialog)
-        self.pbGo.setGeometry(QtCore.QRect(140, 50, 99, 27))
+        self.pbGo.setGeometry(QtCore.QRect(140, 60, 99, 27))
         self.pbGo.setObjectName("pbGo")
-        self.pbStop = QtGui.QPushButton(Dialog)
-        self.pbStop.setGeometry(QtCore.QRect(140, 80, 99, 27))
-        self.pbStop.setObjectName("pbStop")
         self.pbRotateRight = QtGui.QPushButton(Dialog)
         self.pbRotateRight.setGeometry(QtCore.QRect(250, 80, 99, 27))
         self.pbRotateRight.setObjectName("pbRotateRight")
@@ -40,7 +37,7 @@ class Ui_Dialog(object):
         self.txtLED.setGeometry(QtCore.QRect(550, 190, 31, 20))
         self.txtLED.setObjectName("txtLED")
         self.pbBack = QtGui.QPushButton(Dialog)
-        self.pbBack.setGeometry(QtCore.QRect(140, 110, 99, 27))
+        self.pbBack.setGeometry(QtCore.QRect(140, 90, 99, 27))
         self.pbBack.setObjectName("pbBack")
         self.sldPower = QtGui.QSlider(Dialog)
         self.sldPower.setGeometry(QtCore.QRect(490, 220, 29, 160))
@@ -57,10 +54,6 @@ class Ui_Dialog(object):
         self.chkPower = QtGui.QCheckBox(Dialog)
         self.chkPower.setGeometry(QtCore.QRect(500, 160, 121, 22))
         self.chkPower.setObjectName("chkPower")
-        self.progressBar = QtGui.QProgressBar(Dialog)
-        self.progressBar.setGeometry(QtCore.QRect(60, 280, 118, 23))
-        self.progressBar.setProperty("value", 24)
-        self.progressBar.setObjectName("progressBar")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -68,7 +61,6 @@ class Ui_Dialog(object):
     def retranslateUi(self, Dialog):
         Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "PalmettoControl", None, QtGui.QApplication.UnicodeUTF8))
         self.pbGo.setText(QtGui.QApplication.translate("Dialog", "Go", None, QtGui.QApplication.UnicodeUTF8))
-        self.pbStop.setText(QtGui.QApplication.translate("Dialog", "Stop", None, QtGui.QApplication.UnicodeUTF8))
         self.pbRotateRight.setText(QtGui.QApplication.translate("Dialog", "Rotate Right", None, QtGui.QApplication.UnicodeUTF8))
         self.lblVoltage.setText(QtGui.QApplication.translate("Dialog", "??", None, QtGui.QApplication.UnicodeUTF8))
         self.pbRotateLeft.setText(QtGui.QApplication.translate("Dialog", "Rotate Left", None, QtGui.QApplication.UnicodeUTF8))
