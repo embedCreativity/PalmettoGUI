@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt.ui'
 #
-# Created: Tue Apr  4 09:44:17 2017
+# Created: Tue Apr  4 23:24:59 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -12,7 +12,7 @@ from PySide import QtCore, QtGui
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         Dialog.setObjectName("Dialog")
-        Dialog.resize(634, 439)
+        Dialog.resize(633, 439)
         self.pbGo = QtGui.QPushButton(Dialog)
         self.pbGo.setGeometry(QtCore.QRect(140, 50, 99, 27))
         self.pbGo.setObjectName("pbGo")
@@ -57,12 +57,16 @@ class Ui_Dialog(object):
         self.chkPower = QtGui.QCheckBox(Dialog)
         self.chkPower.setGeometry(QtCore.QRect(500, 160, 121, 22))
         self.chkPower.setObjectName("chkPower")
+        self.progressBar = QtGui.QProgressBar(Dialog)
+        self.progressBar.setGeometry(QtCore.QRect(60, 280, 118, 23))
+        self.progressBar.setProperty("value", 24)
+        self.progressBar.setObjectName("progressBar")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
 
     def retranslateUi(self, Dialog):
-        Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "Dialog", None, QtGui.QApplication.UnicodeUTF8))
+        Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "PalmettoControl", None, QtGui.QApplication.UnicodeUTF8))
         self.pbGo.setText(QtGui.QApplication.translate("Dialog", "Go", None, QtGui.QApplication.UnicodeUTF8))
         self.pbStop.setText(QtGui.QApplication.translate("Dialog", "Stop", None, QtGui.QApplication.UnicodeUTF8))
         self.pbRotateRight.setText(QtGui.QApplication.translate("Dialog", "Rotate Right", None, QtGui.QApplication.UnicodeUTF8))

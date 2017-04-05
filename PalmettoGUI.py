@@ -2,12 +2,36 @@
 
 import sys
 
-from PySide.QtCore import *
 from PySide.QtGui import *
+import PySide.QtCore as QtCore
 import QtUI
 import time
+#import threading
 
 from embedcreativity import PalmettoAPI
+
+class PalmettoGUI():
+    def __init__(self):
+        # Set up and start the GUI
+        self.GUI = QApplication(sys.argv)
+        self.form = MainDialog()
+        self.form.show()
+
+    def startGui(self):
+        self.GUI.exec_()
+
+class HeartBeat( QtCore.QThread ):
+
+    heartBeat = QtCore.Signal(int)
+
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+
+    def run(self):
+        while True:
+            for i in range(100):
+                self.heartBeat.emit(i)
+                time.sleep(0.1)
 
 class MainDialog(QDialog, QtUI.Ui_Dialog):
 
@@ -22,6 +46,10 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         self.chkPower.clicked.connect(self.MotorPower)
         self.sldLED.valueChanged.connect(self.SetLED)
         self.sldPower.valueChanged.connect(self.UpdatePower)
+
+        self.heartBeat = HeartBeat()
+        self.heartBeat.heartBeat.connect(self.UpdateProgressBar)
+        self.heartBeat.start()
 
         self.API = PalmettoAPI()
         self.API.send('setled 3')
@@ -61,6 +89,9 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         else:
             self.Send('moff')
 
+    def UpdateProgressBar(self, value):
+        self.progressBar.setValue(value)
+
     def UpdatePower(self):
         self.lblPower.setText(str(self.sldPower.value()))
 
@@ -76,8 +107,7 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
             self.lblVoltage.setText('{:.2f}V'.format(self.voltage))
 
 
+if __name__ == "__main__":
+    gui = PalmettoGUI()
+    gui.startGui()
 
-app = QApplication(sys.argv)
-form = MainDialog()
-form.show()
-app.exec_()
