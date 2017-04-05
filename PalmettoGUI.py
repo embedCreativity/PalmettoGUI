@@ -19,16 +19,14 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         self.pbRotateRight.clicked.connect(self.RotateRight)
         self.pbRotateLeft.clicked.connect(self.RotateLeft)
         self.pbBack.clicked.connect(self.Back)
+        self.chkPower.clicked.connect(self.MotorPower)
         self.sldLED.valueChanged.connect(self.SetLED)
         self.sldPower.valueChanged.connect(self.UpdatePower)
 
         self.API = PalmettoAPI()
-        self.API.send('mon')
         self.API.send('setled 3')
         self.status = -1
         self.voltage = -1
-
-
 
     def Go(self):
         self.Send('setmotor 1 ' + str(self.sldPower.value()))
@@ -57,7 +55,11 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         self.Send('setmotor 4 ' + str(-1 * self.sldPower.value()))
     def SetLED(self):
         self.Send('setled ' + str(self.sldLED.value()))
-
+    def MotorPower(self):
+        if True == self.chkPower.isChecked():
+            self.Send('mon')
+        else:
+            self.Send('moff')
 
     def UpdatePower(self):
         self.lblPower.setText(str(self.sldPower.value()))

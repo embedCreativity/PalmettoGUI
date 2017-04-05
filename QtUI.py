@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt.ui'
 #
-# Created: Sun Apr  2 08:11:10 2017
+# Created: Tue Apr  4 09:44:17 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -54,6 +54,9 @@ class Ui_Dialog(object):
         self.lblPower.setGeometry(QtCore.QRect(470, 380, 68, 17))
         self.lblPower.setAlignment(QtCore.Qt.AlignCenter)
         self.lblPower.setObjectName("lblPower")
+        self.chkPower = QtGui.QCheckBox(Dialog)
+        self.chkPower.setGeometry(QtCore.QRect(500, 160, 121, 22))
+        self.chkPower.setObjectName("chkPower")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -70,4 +73,5 @@ class Ui_Dialog(object):
         self.pbBack.setText(QtGui.QApplication.translate("Dialog", "Back", None, QtGui.QApplication.UnicodeUTF8))
         self.txtPower.setText(QtGui.QApplication.translate("Dialog", "Power", None, QtGui.QApplication.UnicodeUTF8))
         self.lblPower.setText(QtGui.QApplication.translate("Dialog", "0", None, QtGui.QApplication.UnicodeUTF8))
+        self.chkPower.setText(QtGui.QApplication.translate("Dialog", "Motor Power", None, QtGui.QApplication.UnicodeUTF8))
 
