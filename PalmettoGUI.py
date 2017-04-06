@@ -42,7 +42,7 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         super(MainDialog, self).__init__(parent)
         self.setupUi(self)
         self.chkPower.clicked.connect(self.MotorPower)
-        self.sldLED.valueChanged.connect(self.SetLED)
+        #self.sldLED.valueChanged.connect(self.SetLED)
         self.sldPower.valueChanged.connect(self.UpdatePower)
 
         # set up the heartbeat callback
@@ -71,8 +71,8 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         self.stateRotateLeft = False
         self.stateBack = False
 
-    def SetLED(self):
-        self.Send('setled ' + str(self.sldLED.value()))
+    # def SetLED(self):
+    #     self.Send('setled ' + str(self.sldLED.value()))
     def MotorPower(self):
         if True == self.chkPower.isChecked():
             self.Send('mon')
@@ -81,60 +81,29 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
 
     def ServiceHeartBeat(self, value):
 
-        led = abs(int(1000.0 * float(self.joystick.absRy[0])/float(self.joystick.absRy[2])))
-        self.Send('setled {}'.format(int(led)))
+        pwr = int(1000.0 * float(self.joystick.absRy[0])/float(self.joystick.absRy[2]))
+        self.Send('setmotor 3 {}'.format(pwr))
+        self.Send('setmotor 4 {}'.format(pwr))
 
-        if self.pbGo.isDown() != self.stateGo:
-            self.stateGo = self.pbGo.isDown() # update state
-            if self.pbGo.isDown():
-                self.Send('setmotor 1 ' + str(self.sldPower.value()))
-                self.Send('setmotor 2 ' + str(self.sldPower.value()))
-                self.Send('setmotor 3 ' + str(-1 * self.sldPower.value()))
-                self.Send('setmotor 4 ' + str(-1 * self.sldPower.value()))
-            else:
-                self.Send('setmotor 1 0')
-                self.Send('setmotor 2 0')
-                self.Send('setmotor 3 0')
-                self.Send('setmotor 4 0')
+        pwr = -1 * int(1000.0 * float(self.joystick.absY[0]) / float(self.joystick.absY[2]))
+        self.Send('setmotor 1 {}'.format(pwr))
+        self.Send('setmotor 2 {}'.format(pwr))
 
-        if self.pbBack.isDown() != self.stateBack:
-            self.stateBack = self.pbBack.isDown() # update state
-            if self.pbBack.isDown():
-                self.Send('setmotor 1 ' + str(-1 * self.sldPower.value()))
-                self.Send('setmotor 2 ' + str(-1 * self.sldPower.value()))
-                self.Send('setmotor 3 ' + str(self.sldPower.value()))
-                self.Send('setmotor 4 ' + str(self.sldPower.value()))
-            else:
-                self.Send('setmotor 1 0')
-                self.Send('setmotor 2 0')
-                self.Send('setmotor 3 0')
-                self.Send('setmotor 4 0')
+        pwr = abs(int(1000.0 * float(self.joystick.absRz[0]) / float(self.joystick.absRz[2])))
+        self.Send('setled {}'.format(pwr))
 
-        if self.pbRotateLeft.isDown() != self.stateRotateLeft:
-            self.stateRotateLeft = self.pbRotateLeft.isDown() # update state
-            if self.pbRotateLeft.isDown():
-                self.Send('setmotor 1 ' + str(-1 * self.sldPower.value()))
-                self.Send('setmotor 2 ' + str(-1 * self.sldPower.value()))
-                self.Send('setmotor 3 ' + str(-1 * self.sldPower.value()))
-                self.Send('setmotor 4 ' + str(-1 * self.sldPower.value()))
-            else:
-                self.Send('setmotor 1 0')
-                self.Send('setmotor 2 0')
-                self.Send('setmotor 3 0')
-                self.Send('setmotor 4 0')
-
-        if self.pbRotateRight.isDown() != self.stateRotateRight:
-            self.stateRotateRight = self.pbRotateRight.isDown() # update state
-            if self.pbRotateRight.isDown():
-                self.Send('setmotor 1 ' + str(self.sldPower.value()))
-                self.Send('setmotor 2 ' + str(self.sldPower.value()))
-                self.Send('setmotor 3 ' + str(self.sldPower.value()))
-                self.Send('setmotor 4 ' + str(self.sldPower.value()))
-            else:
-                self.Send('setmotor 1 0')
-                self.Send('setmotor 2 0')
-                self.Send('setmotor 3 0')
-                self.Send('setmotor 4 0')
+        # if self.pbGo.isDown() != self.stateGo:
+        #     self.stateGo = self.pbGo.isDown() # update state
+        #     if self.pbGo.isDown():
+        #         self.Send('setmotor 1 ' + str(self.sldPower.value()))
+        #         self.Send('setmotor 2 ' + str(self.sldPower.value()))
+        #         self.Send('setmotor 3 ' + str(-1 * self.sldPower.value()))
+        #         self.Send('setmotor 4 ' + str(-1 * self.sldPower.value()))
+        #     else:
+        #         self.Send('setmotor 1 0')
+        #         self.Send('setmotor 2 0')
+        #         self.Send('setmotor 3 0')
+        #         self.Send('setmotor 4 0')
 
         self.heartBeat.lockHeartBeat.unlock() # allow heartbeat thread to continue
 

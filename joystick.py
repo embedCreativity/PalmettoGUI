@@ -28,6 +28,7 @@ class Joystick( QtCore.QThread ):
     absRz = [0, _cap[ecodes.EV_ABS][5][1].min, _cap[ecodes.EV_ABS][5][1].max]
     absHatX = [0, _cap[ecodes.EV_ABS][6][1].min, _cap[ecodes.EV_ABS][6][1].max]
     absHatY = [0, _cap[ecodes.EV_ABS][7][1].min, _cap[ecodes.EV_ABS][7][1].max]
+    running = True
 
     def __init__(self, lock):
         QtCore.QThread.__init__(self)
@@ -37,47 +38,50 @@ class Joystick( QtCore.QThread ):
     def run(self):
         print "thread running"
         for event in self._dev.read_loop():
-            if event.type == ecodes.EV_KEY:
-                if event.code == ecodes.BTN_A:
-                    self.btnA = event.value
-                elif event.code == ecodes.BTN_B:
-                    self.btnB = event.value
-                elif event.code == ecodes.BTN_X:
-                    self.btnX = event.value
-                elif event.code == ecodes.BTN_Y:
-                    self.btnY = event.value
-                elif event.code == ecodes.BTN_TL:
-                    self.btnTL = event.value
-                elif event.code == ecodes.BTN_TR:
-                    self.btnTR = event.value
-                elif event.code == ecodes.BTN_SELECT:
-                    self.btnSelect = event.value
-                elif event.code == ecodes.BTN_START:
-                    self.btnStart = event.value
-                elif event.code == ecodes.BTN_MODE:
-                    self.btnMode = event.value
-                elif event.code == ecodes.BTN_THUMBL:
-                    self.btnThumbL = event.value
-                elif event.code == ecodes.BTN_THUMBR:
-                    self.btnThumbR = event.value
+            if self.running:
+                if event.type == ecodes.EV_KEY:
+                    if event.code == ecodes.BTN_A:
+                        self.btnA = event.value
+                    elif event.code == ecodes.BTN_B:
+                        self.btnB = event.value
+                    elif event.code == ecodes.BTN_X:
+                        self.btnX = event.value
+                    elif event.code == ecodes.BTN_Y:
+                        self.btnY = event.value
+                    elif event.code == ecodes.BTN_TL:
+                        self.btnTL = event.value
+                    elif event.code == ecodes.BTN_TR:
+                        self.btnTR = event.value
+                    elif event.code == ecodes.BTN_SELECT:
+                        self.btnSelect = event.value
+                    elif event.code == ecodes.BTN_START:
+                        self.btnStart = event.value
+                    elif event.code == ecodes.BTN_MODE:
+                        self.btnMode = event.value
+                    elif event.code == ecodes.BTN_THUMBL:
+                        self.btnThumbL = event.value
+                    elif event.code == ecodes.BTN_THUMBR:
+                        self.btnThumbR = event.value
 
-            elif event.type == ecodes.EV_ABS:
-                if event.code == ecodes.ABS_X:
-                    self.absX[0] = event.value
-                elif event.code == ecodes.ABS_Y:
-                    self.absY[0] = event.value
-                elif event.code == ecodes.ABS_Z:
-                    self.absZ[0] = event.value
-                elif event.code == ecodes.ABS_RX:
-                    self.absRx[0] = event.value
-                elif event.code == ecodes.ABS_RY:
-                    self.absRy[0] = event.value
-                elif event.code == ecodes.ABS_RZ:
-                    self.absRz[0] = event.value
-                elif event.code == ecodes.ABS_HAT0X:
-                    self.absHatX[0] = event.value
-                elif event.code == ecodes.ABS_HAT0Y:
-                    self.absHatY[0] = event.value
+                elif event.type == ecodes.EV_ABS:
+                    if event.code == ecodes.ABS_X:
+                        self.absX[0] = event.value
+                    elif event.code == ecodes.ABS_Y:
+                        self.absY[0] = event.value
+                    elif event.code == ecodes.ABS_Z:
+                        self.absZ[0] = event.value
+                    elif event.code == ecodes.ABS_RX:
+                        self.absRx[0] = event.value
+                    elif event.code == ecodes.ABS_RY:
+                        self.absRy[0] = event.value
+                    elif event.code == ecodes.ABS_RZ:
+                        self.absRz[0] = event.value
+                    elif event.code == ecodes.ABS_HAT0X:
+                        self.absHatX[0] = event.value
+                    elif event.code == ecodes.ABS_HAT0Y:
+                        self.absHatY[0] = event.value
+
+        print "joystick quitting..."
 
 
 
