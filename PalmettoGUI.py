@@ -6,7 +6,7 @@ from PySide.QtGui import *
 import PySide.QtCore as QtCore
 import QtUI
 import time
-#import threading
+from joystick import Joystick
 
 from embedcreativity import PalmettoAPI
 
@@ -26,13 +26,13 @@ class HeartBeat( QtCore.QThread ):
 
     def __init__(self):
         QtCore.QThread.__init__(self)
-        self.lock = QtCore.QMutex()
+        self.lockHeartBeat = QtCore.QMutex()
 
     def run(self):
         while True:
             for i in range(100):
                 # Make sure we've returned from comms before calling again
-                self.lock.lock()
+                self.lockHeartBeat.lock()
                 self.heartBeat.emit(i)
                 time.sleep(0.01)
 
@@ -50,11 +50,20 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         self.heartBeat.heartBeat.connect(self.ServiceHeartBeat)
         self.heartBeat.start() # start the heartbeat thread!
 
+        print '123'
+        # set up the joystick thread
+        self.lockJoystick = QtCore.QMutex()
+        self.joystick = Joystick(self.lockJoystick)
+        self.joystick.start()
+
+        print 'foo'
         # This is the embedcreativity API
         self.API = PalmettoAPI()
         self.API.send('setled 3')
         self.status = -1
         self.voltage = -1
+
+        print 'bar'
 
         # Status variables to keep track of what we've sent the board
         self.stateGo = False
@@ -71,6 +80,10 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
             self.Send('moff')
 
     def ServiceHeartBeat(self, value):
+
+        led = abs(int(1000.0 * float(self.joystick.absRy[0])/float(self.joystick.absRy[2])))
+        self.Send('setled {}'.format(int(led)))
+
         if self.pbGo.isDown() != self.stateGo:
             self.stateGo = self.pbGo.isDown() # update state
             if self.pbGo.isDown():
@@ -123,7 +136,7 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
                 self.Send('setmotor 3 0')
                 self.Send('setmotor 4 0')
 
-        self.heartBeat.lock.unlock() # allow heartbeat thread to continue
+        self.heartBeat.lockHeartBeat.unlock() # allow heartbeat thread to continue
 
     def UpdatePower(self):
         self.lblPower.setText(str(self.sldPower.value()))

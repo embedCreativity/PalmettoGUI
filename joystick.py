@@ -1,86 +1,88 @@
 #!/usr/bin/env python
 
 from evdev import InputDevice, categorize, ecodes
+import PySide.QtCore as QtCore
 
-dev = InputDevice('/dev/input/event7')
+class Joystick( QtCore.QThread ):
 
-print 'Using {} as device!'.format(dev)
+    _dev = InputDevice('/dev/input/event7')
+    _cap = _dev.capabilities()
 
-for event in dev.read_loop():
-    if event.type == ecodes.EV_KEY:
-        if event.code == ecodes.BTN_A:
-            if event.value == 1:
-                print 'BTN A down!'
-            else:
-                print 'BTN A up!'
-        elif event.code == ecodes.BTN_B:
-            if event.value == 1:
-                print 'BTN B down!'
-            else:
-                print 'BTN B up!'
-        elif event.code == ecodes.BTN_X:
-            if event.value == 1:
-                print 'BTN X down!'
-            else:
-                print 'BTN X up!'
-        elif event.code == ecodes.BTN_Y:
-            if event.value == 1:
-                print 'BTN Y down!'
-            else:
-                print 'BTN Y up!'
-        elif event.code == ecodes.BTN_TL:
-            if event.value == 1:
-                print 'BTN TL down!'
-            else:
-                print 'BTN TL up!'
-        elif event.code == ecodes.BTN_TR:
-            if event.value == 1:
-                print 'BTN TR down!'
-            else:
-                print 'BTN TR up!'
-        elif event.code == ecodes.BTN_SELECT:
-            if event.value == 1:
-                print 'BTN SELECT down!'
-            else:
-                print 'BTN SELECT up!'
-        elif event.code == ecodes.BTN_START:
-            if event.value == 1:
-                print 'BTN START down!'
-            else:
-                print 'BTN START up!'
-        elif event.code == ecodes.BTN_MODE:
-            if event.value == 1:
-                print 'BTN MODE down!'
-            else:
-                print 'BTN MODE up!'
-        elif event.code == ecodes.BTN_THUMBL:
-            if event.value == 1:
-                print 'BTN THUMBL down!'
-            else:
-                print 'BTN THUMBL up!'
-        elif event.code == ecodes.BTN_THUMBR:
-            if event.value == 1:
-                print 'BTN THUMBR down!'
-            else:
-                print 'BTN THUMBR up!'
+    # The following values are shared with whomever is using the joystick
+    btnA = 0
+    btnB = 0
+    btnX = 0
+    btnY = 0
+    btnTL = 0
+    btnTR = 0
+    btnSelect = 0
+    btnStart = 0
+    btnMode = 0
+    btnThumbL = 0
+    btnThumbR = 0
+    absX = [0, _cap[ecodes.EV_ABS][0][1].min, _cap[ecodes.EV_ABS][0][1].max]
+    absY = [0, _cap[ecodes.EV_ABS][1][1].min, _cap[ecodes.EV_ABS][1][1].max]
+    absZ = [0, _cap[ecodes.EV_ABS][2][1].min, _cap[ecodes.EV_ABS][2][1].max]
+    absRx = [0, _cap[ecodes.EV_ABS][3][1].min, _cap[ecodes.EV_ABS][3][1].max]
+    absRy = [0, _cap[ecodes.EV_ABS][4][1].min, _cap[ecodes.EV_ABS][4][1].max]
+    absRz = [0, _cap[ecodes.EV_ABS][5][1].min, _cap[ecodes.EV_ABS][5][1].max]
+    absHatX = [0, _cap[ecodes.EV_ABS][6][1].min, _cap[ecodes.EV_ABS][6][1].max]
+    absHatY = [0, _cap[ecodes.EV_ABS][7][1].min, _cap[ecodes.EV_ABS][7][1].max]
 
-    elif event.type == ecodes.EV_ABS:
-        if event.code == ecodes.ABS_X:
-            print 'ABS_X: {}'.format(event.value)
-        elif event.code == ecodes.ABS_Y:
-            print 'ABS_Y: {}'.format(event.value)
-        elif event.code == ecodes.ABS_Z:
-            print 'ABS_Z: {}'.format(event.value)
-        elif event.code == ecodes.ABS_RX:
-            print 'ABS_RX: {}'.format(event.value)
-        elif event.code == ecodes.ABS_RY:
-            print 'ABS_RY: {}'.format(event.value)
-        elif event.code == ecodes.ABS_RZ:
-            print 'ABS_RZ: {}'.format(event.value)
-        elif event.code == ecodes.ABS_HAT0X:
-            print 'ABS_HAT0X: {}'.format(event.value)
-        elif event.code == ecodes.ABS_HAT0Y:
-            print 'ABS_HAT0Y: {}'.format(event.value)
+    def __init__(self, lock):
+        QtCore.QThread.__init__(self)
+        self.lock = lock
+        print 'Using {} as device!'.format(self._dev)
+
+    def run(self):
+        print "thread running"
+        for event in self._dev.read_loop():
+            if event.type == ecodes.EV_KEY:
+                if event.code == ecodes.BTN_A:
+                    self.btnA = event.value
+                elif event.code == ecodes.BTN_B:
+                    self.btnB = event.value
+                elif event.code == ecodes.BTN_X:
+                    self.btnX = event.value
+                elif event.code == ecodes.BTN_Y:
+                    self.btnY = event.value
+                elif event.code == ecodes.BTN_TL:
+                    self.btnTL = event.value
+                elif event.code == ecodes.BTN_TR:
+                    self.btnTR = event.value
+                elif event.code == ecodes.BTN_SELECT:
+                    self.btnSelect = event.value
+                elif event.code == ecodes.BTN_START:
+                    self.btnStart = event.value
+                elif event.code == ecodes.BTN_MODE:
+                    self.btnMode = event.value
+                elif event.code == ecodes.BTN_THUMBL:
+                    self.btnThumbL = event.value
+                elif event.code == ecodes.BTN_THUMBR:
+                    self.btnThumbR = event.value
+
+            elif event.type == ecodes.EV_ABS:
+                if event.code == ecodes.ABS_X:
+                    self.absX[0] = event.value
+                elif event.code == ecodes.ABS_Y:
+                    self.absY[0] = event.value
+                elif event.code == ecodes.ABS_Z:
+                    self.absZ[0] = event.value
+                elif event.code == ecodes.ABS_RX:
+                    self.absRx[0] = event.value
+                elif event.code == ecodes.ABS_RY:
+                    self.absRy[0] = event.value
+                elif event.code == ecodes.ABS_RZ:
+                    self.absRz[0] = event.value
+                elif event.code == ecodes.ABS_HAT0X:
+                    self.absHatX[0] = event.value
+                elif event.code == ecodes.ABS_HAT0Y:
+                    self.absHatY[0] = event.value
+
+
+
+
+
 
 
 
