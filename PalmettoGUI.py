@@ -42,28 +42,22 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         super(MainDialog, self).__init__(parent)
         self.setupUi(self)
         self.chkPower.clicked.connect(self.MotorPower)
-        #self.sldLED.valueChanged.connect(self.SetLED)
-        self.sldPower.valueChanged.connect(self.UpdatePower)
 
         # set up the heartbeat callback
         self.heartBeat = HeartBeat()
         self.heartBeat.heartBeat.connect(self.ServiceHeartBeat)
         self.heartBeat.start() # start the heartbeat thread!
 
-        print '123'
         # set up the joystick thread
         self.lockJoystick = QtCore.QMutex()
         self.joystick = Joystick(self.lockJoystick)
         self.joystick.start()
 
-        print 'foo'
         # This is the embedcreativity API
         self.API = PalmettoAPI()
         self.API.send('setled 3')
         self.status = -1
         self.voltage = -1
-
-        print 'bar'
 
         # Status variables to keep track of what we've sent the board
         self.stateGo = False
@@ -71,8 +65,6 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         self.stateRotateLeft = False
         self.stateBack = False
 
-    # def SetLED(self):
-    #     self.Send('setled ' + str(self.sldLED.value()))
     def MotorPower(self):
         if True == self.chkPower.isChecked():
             self.Send('mon')
@@ -91,19 +83,6 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
 
         pwr = abs(int(1000.0 * float(self.joystick.absRz[0]) / float(self.joystick.absRz[2])))
         self.Send('setled {}'.format(pwr))
-
-        # if self.pbGo.isDown() != self.stateGo:
-        #     self.stateGo = self.pbGo.isDown() # update state
-        #     if self.pbGo.isDown():
-        #         self.Send('setmotor 1 ' + str(self.sldPower.value()))
-        #         self.Send('setmotor 2 ' + str(self.sldPower.value()))
-        #         self.Send('setmotor 3 ' + str(-1 * self.sldPower.value()))
-        #         self.Send('setmotor 4 ' + str(-1 * self.sldPower.value()))
-        #     else:
-        #         self.Send('setmotor 1 0')
-        #         self.Send('setmotor 2 0')
-        #         self.Send('setmotor 3 0')
-        #         self.Send('setmotor 4 0')
 
         self.heartBeat.lockHeartBeat.unlock() # allow heartbeat thread to continue
 
