@@ -9,17 +9,17 @@ class Joystick( QtCore.QThread ):
     _cap = _dev.capabilities()
 
     # The following values are shared with whomever is using the joystick
-    btnA = 0
-    btnB = 0
-    btnX = 0
-    btnY = 0
-    btnTL = 0
-    btnTR = 0
-    btnSelect = 0
-    btnStart = 0
-    btnMode = 0
-    btnThumbL = 0
-    btnThumbR = 0
+    btnA = [0, False]
+    btnB = [0, False]
+    btnX = [0, False]
+    btnY = [0, False]
+    btnTL = [0, False]
+    btnTR = [0, False]
+    btnSelect = [0, False]
+    btnStart = [0, False]
+    btnMode = [0, False]
+    btnThumbL = [0, False]
+    btnThumbR = [0, False]
     absX = [0, _cap[ecodes.EV_ABS][0][1].min, _cap[ecodes.EV_ABS][0][1].max]
     absY = [0, _cap[ecodes.EV_ABS][1][1].min, _cap[ecodes.EV_ABS][1][1].max]
     absZ = [0, _cap[ecodes.EV_ABS][2][1].min, _cap[ecodes.EV_ABS][2][1].max]
@@ -41,27 +41,38 @@ class Joystick( QtCore.QThread ):
             if self.running:
                 if event.type == ecodes.EV_KEY:
                     if event.code == ecodes.BTN_A:
-                        self.btnA = event.value
+                        self.btnA[0] = event.value
+                        self.btnA[1] = True
                     elif event.code == ecodes.BTN_B:
-                        self.btnB = event.value
+                        self.btnB[0] = event.value
+                        self.btnB[1] = True
                     elif event.code == ecodes.BTN_X:
-                        self.btnX = event.value
+                        self.btnX[0] = event.value
+                        self.btnX[1] = True
                     elif event.code == ecodes.BTN_Y:
-                        self.btnY = event.value
+                        self.btnY[0] = event.value
+                        self.btnY[1] = True
                     elif event.code == ecodes.BTN_TL:
-                        self.btnTL = event.value
+                        self.btnTL[0] = event.value
+                        self.btnTL[1] = True
                     elif event.code == ecodes.BTN_TR:
-                        self.btnTR = event.value
+                        self.btnTR[0] = event.value
+                        self.btnTR[1] = True
                     elif event.code == ecodes.BTN_SELECT:
-                        self.btnSelect = event.value
+                        self.btnSelect[0] = event.value
+                        self.btnSelect[1] = True
                     elif event.code == ecodes.BTN_START:
-                        self.btnStart = event.value
+                        self.btnStart[0] = event.value
+                        self.btnStart[1] = True
                     elif event.code == ecodes.BTN_MODE:
-                        self.btnMode = event.value
+                        self.btnMode[0] = event.value
+                        self.btnMode[1] = True
                     elif event.code == ecodes.BTN_THUMBL:
-                        self.btnThumbL = event.value
+                        self.btnThumbL[0] = event.value
+                        self.btnThumbL[1] = True
                     elif event.code == ecodes.BTN_THUMBR:
-                        self.btnThumbR = event.value
+                        self.btnThumbR[0] = event.value
+                        self.btnThumbR[1] = True
 
                 elif event.type == ecodes.EV_ABS:
                     if event.code == ecodes.ABS_X:

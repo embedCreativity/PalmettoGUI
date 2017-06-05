@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'qt.ui'
 #
-# Created: Thu Apr  6 12:50:31 2017
+# Created: Fri Apr  7 10:58:34 2017
 #      by: pyside-uic 0.2.15 running on PySide 1.2.2
 #
 # WARNING! All changes made in this file will be lost!
@@ -19,9 +19,9 @@ class Ui_Dialog(object):
         self.txtBattery = QtGui.QLabel(Dialog)
         self.txtBattery.setGeometry(QtCore.QRect(20, 40, 61, 17))
         self.txtBattery.setObjectName("txtBattery")
-        self.chkPower = QtGui.QCheckBox(Dialog)
-        self.chkPower.setGeometry(QtCore.QRect(10, 10, 121, 22))
-        self.chkPower.setObjectName("chkPower")
+        self.lblMotorPower = QtGui.QLabel(Dialog)
+        self.lblMotorPower.setGeometry(QtCore.QRect(20, 20, 131, 17))
+        self.lblMotorPower.setObjectName("lblMotorPower")
 
         self.retranslateUi(Dialog)
         QtCore.QMetaObject.connectSlotsByName(Dialog)
@@ -30,5 +30,5 @@ class Ui_Dialog(object):
         Dialog.setWindowTitle(QtGui.QApplication.translate("Dialog", "PalmettoControl", None, QtGui.QApplication.UnicodeUTF8))
         self.lblVoltage.setText(QtGui.QApplication.translate("Dialog", "??", None, QtGui.QApplication.UnicodeUTF8))
         self.txtBattery.setText(QtGui.QApplication.translate("Dialog", "Battery:", None, QtGui.QApplication.UnicodeUTF8))
-        self.chkPower.setText(QtGui.QApplication.translate("Dialog", "Motor Power", None, QtGui.QApplication.UnicodeUTF8))
+        self.lblMotorPower.setText(QtGui.QApplication.translate("Dialog", "Motor Power Off", None, QtGui.QApplication.UnicodeUTF8))
 

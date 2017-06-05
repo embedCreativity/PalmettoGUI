@@ -39,17 +39,17 @@
     <string>Battery:</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="chkPower">
+  <widget class="QLabel" name="lblMotorPower">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>121</width>
-     <height>22</height>
+     <x>20</x>
+     <y>20</y>
+     <width>131</width>
+     <height>17</height>
     </rect>
    </property>
    <property name="text">
-    <string>Motor Power</string>
+    <string>Motor Power Off</string>
    </property>
   </widget>
  </widget>

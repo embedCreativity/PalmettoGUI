@@ -41,7 +41,6 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
     def __init__(self, parent=None):
         super(MainDialog, self).__init__(parent)
         self.setupUi(self)
-        self.chkPower.clicked.connect(self.MotorPower)
 
         # set up the heartbeat callback
         self.heartBeat = HeartBeat()
@@ -60,16 +59,7 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         self.voltage = -1
 
         # Status variables to keep track of what we've sent the board
-        self.stateGo = False
-        self.stateRotateRight = False
-        self.stateRotateLeft = False
-        self.stateBack = False
-
-    def MotorPower(self):
-        if True == self.chkPower.isChecked():
-            self.Send('mon')
-        else:
-            self.Send('moff')
+        self.motorPowerOn = False
 
     def ServiceHeartBeat(self, value):
 
@@ -83,6 +73,18 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
 
         pwr = abs(int(1000.0 * float(self.joystick.absRz[0]) / float(self.joystick.absRz[2])))
         self.Send('setled {}'.format(pwr))
+
+        if self.joystick.btnMode[1]: # new button activity (either pressed or released)
+            self.joystick.btnMode[1] = False #reset flag
+            if 1 == self.joystick.btnMode[0]: # button pressed!
+                if self.motorPowerOn: # it's on, let's turn it off
+                    self.motorPowerOn = False
+                    self.lblMotorPower.setText('Motor Power Off')
+                    self.Send('moff')
+                else: # it's off, let's turn it on
+                    self.motorPowerOn = True
+                    self.lblMotorPower.setText('Motor Power On')
+                    self.Send('mon')
 
         self.heartBeat.lockHeartBeat.unlock() # allow heartbeat thread to continue
 
