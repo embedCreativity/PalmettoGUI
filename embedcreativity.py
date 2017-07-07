@@ -35,7 +35,7 @@ class PalmettoAPI:
             current = (float(adcCurrent)) * (55.0/4096.0)
             return [status, voltage, current]
         except:
-            print "ERROR: parsing response"
+            #print "ERROR: parsing response"
             return [-1,-1,-1]
 
     def close(self):
