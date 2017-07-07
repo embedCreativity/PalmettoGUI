@@ -10,6 +10,9 @@ from joystick import Joystick
 
 from embedcreativity import PalmettoAPI
 
+SlowMoRate = 0.5
+TiltDefault = 750
+
 class PalmettoGUI():
     def __init__(self):
         # Set up and start the GUI
@@ -57,23 +60,41 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         self.API.send('setled 3')
         self.status = -1
         self.voltage = -1
+        self.current = -1
 
         # Status variables to keep track of what we've sent the board
         self.motorPowerOn = False
+        self.slowMo = True
+        self.tiltDecButtonDown = False
+        self.tiltIncButtonDown = False
+        self.tiltPWM = TiltDefault
 
     def ServiceHeartBeat(self, value):
 
-        pwr = int(1000.0 * float(self.joystick.absRy[0])/float(self.joystick.absRy[2]))
+        # Get motor settings
+        if self.slowMo:
+            pwr = int(1000.0 * SlowMoRate * float(self.joystick.absRy[0])/float(self.joystick.absRy[2]))
+        else:
+            pwr = int(1000.0 * float(self.joystick.absRy[0])/float(self.joystick.absRy[2]))
+        self.Send('setmotor 1 {}'.format(-1 * pwr))
+        self.Send('setmotor 2 {}'.format(-1 * pwr))
+
+        if self.slowMo:
+            pwr = int(1000.0 * SlowMoRate * float(self.joystick.absY[0]) / float(self.joystick.absY[2]))
+        else:
+            pwr = int(1000.0 * float(self.joystick.absY[0]) / float(self.joystick.absY[2]))
         self.Send('setmotor 3 {}'.format(pwr))
-        self.Send('setmotor 4 {}'.format(pwr))
+        self.Send('setmotor 4 {}'.format(-1 * pwr))
 
-        pwr = -1 * int(1000.0 * float(self.joystick.absY[0]) / float(self.joystick.absY[2]))
-        self.Send('setmotor 1 {}'.format(pwr))
-        self.Send('setmotor 2 {}'.format(pwr))
-
+        # Get LED setting
         pwr = abs(int(1000.0 * float(self.joystick.absRz[0]) / float(self.joystick.absRz[2])))
         self.Send('setled {}'.format(pwr))
 
+        # Get Pan Servo setting
+        pan= 600 + int(500 * float(self.joystick.absRx[0]) / float(self.joystick.absRx[2]))
+        self.Send('setservo 1 {}'.format(pan))
+
+        # Check Center Mode Button for Motor On/Off
         if self.joystick.btnMode[1]: # new button activity (either pressed or released)
             self.joystick.btnMode[1] = False #reset flag
             if 1 == self.joystick.btnMode[0]: # button pressed!
@@ -85,7 +106,46 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
                     self.motorPowerOn = True
                     self.lblMotorPower.setText('Motor Power On')
                     self.Send('mon')
+        # Check Back Button for SlowMo
+        if self.joystick.btnSelect[1]:  # new button activity (either pressed or released)
+            self.joystick.btnSelect[1] = False  # reset flag
+            if 1 == self.joystick.btnSelect[0]: # button pressed!
+                if self.slowMo: # it's on, let's turn it off
+                    self.slowMo = False
+                    self.lblSlowMo.setText('SlowMo Off')
+                else: # it's off, let's turn it on
+                    self.slowMo = True
+                    self.lblSlowMo.setText('SlowMo On')
+        # Check Button B for reset Tilt Servo to center
+        if self.joystick.btnB[1]:  # new button activity (either pressed or released)
+            self.joystick.btnB[1] = False  # reset flag
+            if 1 == self.joystick.btnB[0]: # button pressed!
+                self.tiltPWM = TiltDefault
+        # Check Right Trigger for Tilt Servo Down decrement
+        if self.joystick.btnTR[1]:  # new button activity (either pressed or released)
+            self.joystick.btnTR[1] = False  # reset flag
+            if 1 == self.joystick.btnTR[0]: # button down
+                self.tiltDecButtonDown = True
+            else:
+                self.tiltDecButtonDown = False
 
+        # Check Left Trigger for Tilt Servo Up increment
+        if self.joystick.btnTL[1]:  # new button activity (either pressed or released)
+            self.joystick.btnTL[1] = False  # reset flag
+            if 1 == self.joystick.btnTL[0]: # button down
+                self.tiltIncButtonDown = True
+            else:
+                self.tiltIncButtonDown = False
+
+        # Check if buttons are still down and continually inc/dec while they are
+        if self.tiltDecButtonDown:
+            if self.tiltPWM > 0:
+                self.tiltPWM -= 10
+        if self.tiltIncButtonDown:
+            if self.tiltPWM < 1500:
+                self.tiltPWM += 10
+
+        self.Send('setservo 2 {}'.format(self.tiltPWM))
         self.heartBeat.lockHeartBeat.unlock() # allow heartbeat thread to continue
 
     def UpdatePower(self):
@@ -97,10 +157,13 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
     def ProcessResponse(self, response):
         self.status = response[0]
         self.voltage = response[1]
-        if -1 == self.voltage:
+        self.current = response[2]
+        if -1 == self.voltage or -1 == self.current:
             self.lblVoltage.setText('?')
+            self.lblCurrent.setText('?')
         else:
             self.lblVoltage.setText('{:.2f}V'.format(self.voltage))
+            self.lblCurrent.setText('{:.2f}A'.format(self.current))
 
 
 if __name__ == "__main__":

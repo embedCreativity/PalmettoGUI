@@ -4,7 +4,7 @@ import socket
 import sys
 import time
 
-TCP_IP = '192.168.1.80'
+TCP_IP = '192.168.1.60'
 DEFAULT_PORT = 49000
 DEFAULT_MSG = 'Go'
 PERIOD_BEFORE_CLOSE = 2 # seconds
@@ -24,10 +24,19 @@ class PalmettoAPI:
             values = self.data.split(',')
             status = int(values[0],16)
             voltage = (int(values[1],16) / 4096.0) * 19.8
-            return (status,voltage)
+            # 200X voltage amplifier coming off of 0.0003Ohm current sense resistor
+            # V = IR ->  I = V/R = (200X)/(0.0003), where 200X will be between
+            # 0V to 3.3V. Thus, 0V = 0A and 3.3V = 200X where X = 3.3/200 = 0.0165V
+            # and 0.0165V leads to I = (0.0165V)/(0.0003Ohms) = 55Amps.
+            # 12-bit ADC result 4095(12-bit max) = 3.3V. Thus for every single bit
+            # in ADC result, that's an increase of 0.01343101A
+            # Benchtop testing shows an offset of 158mA in idle output
+            adcCurrent = max(0, int(values[2],16))
+            current = (float(adcCurrent)) * (55.0/4096.0)
+            return [status, voltage, current]
         except:
             print "ERROR: parsing response"
-            return (-1,-1)
+            return [-1,-1,-1]
 
     def close(self):
         self.sock.close()
