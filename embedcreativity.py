@@ -23,8 +23,8 @@ class PalmettoAPI:
         try:
             values = self.data.split(',')
             status = int(values[0],16)
-            voltage = values[1]
-            current = values[2]
+            voltage = float(values[1])
+            current = float(values[2])
             return [status, voltage, current]
         except:
             #print "ERROR: parsing response"
