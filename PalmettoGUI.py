@@ -67,13 +67,17 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         self.ledDecButtonDown = False
         self.ledIncButtonDown = False
         self.pwrLED = ledDefault
+        # Security Cam Mode variables
         self.hatXDown = False
+        self.hatYDown = False
         self.securityCamMode = False
         self.securityCamLeftPos = 650
         self.securityCamRightPos = 690
         self.securityCamDirectionIncreasing = True
         self.securityCamPositionLast = 670
         self.securityCamIncAmount = 2
+        self.securityCamIncAmountMin = 1
+        self.securityCamIncAmountMax = 10
 
     def ServiceHeartBeat(self, value):
 
@@ -172,6 +176,7 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
                 else: # it's off, let's turn it on
                     self.securityCamMode = True
                     self.lblSecurityCamMode.setText('Security Cam Mode On')
+
         # Right/Left Hat buttons
         if self.joystick.absHatX[0] != 0 and self.hatXDown == False:
             self.hatXDown = True
@@ -181,6 +186,18 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
                 self.securityCamRightPos = pan # capture pan position
         elif self.joystick.absHatX[0] == 0 and self.hatXDown == True: # button up - reset flag
             self.hatXDown = False
+
+        # Up/Down Hat buttons
+        if self.joystick.absHatY[0] != 0 and self.hatYDown == False:
+            self.hatYDown = True
+            if self.joystick.absHatY[0] == self.joystick.absHatY[1]: # up hat button pressed
+                if  self.securityCamIncAmount < self.securityCamIncAmountMax:
+                    self.securityCamIncAmount += 1
+            else: # down hat button pressed
+                if  self.securityCamIncAmount > self.securityCamIncAmountMin:
+                    self.securityCamIncAmount -= 1
+        elif self.joystick.absHatY[0] == 0 and self.hatYDown == True: # button up - reset flag
+            self.hatYDown = False
 
         # Check Button B for reset LED to 0
         if self.joystick.btnB[1]:  # new button activity (either pressed or released)
