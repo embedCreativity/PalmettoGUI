@@ -67,6 +67,13 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         self.ledDecButtonDown = False
         self.ledIncButtonDown = False
         self.pwrLED = ledDefault
+        self.hatXDown = False
+        self.securityCamMode = False
+        self.securityCamLeftPos = 650
+        self.securityCamRightPos = 690
+        self.securityCamDirectionIncreasing = True
+        self.securityCamPositionLast = 670
+        self.securityCamIncAmount = 2
 
     def ServiceHeartBeat(self, value):
 
@@ -107,7 +114,23 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         self.Send('setmotor 4 {}'.format(-1 * Lmotors))
 
         # Get Pan Servo setting
-        pan= 670 + int(560.0 * float(self.joystick.absRx[0]) / float(self.joystick.absRx[2]))
+        if self.securityCamMode: # automated panning
+            if self.securityCamDirectionIncreasing:
+                if self.securityCamPositionLast < self.securityCamRightPos:
+                    self.securityCamPositionLast += self.securityCamIncAmount
+                else:
+                    self.securityCamDirectionIncreasing = False # flip directions
+                    self.securityCamPositionLast -= self.securityCamIncAmount
+            else:
+                if self.securityCamPositionLast > self.securityCamLeftPos:
+                    self.securityCamPositionLast -= self.securityCamIncAmount
+                else:
+                    self.securityCamDirectionIncreasing = True # flip directions
+                    self.securityCamPositionLast += self.securityCamIncAmount
+            pan = self.securityCamPositionLast
+        else: # joystick controlled
+            pan = 670 + int(560.0 * float(self.joystick.absRx[0]) / float(self.joystick.absRx[2]))
+
         self.Send('setservo 1 {}'.format(pan))
 
         # Get Tilt Servo setting
@@ -139,12 +162,32 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
                 else: # it's off, let's turn it on
                     self.slowMo = True
                     self.lblSlowMo.setText('SlowMo On')
-        # Check Button B for reset Tilt Servo to center
+        # Toggle Security Cam Mode
+        if self.joystick.btnStart[1]: # new button activity (either pressed or released)
+            self.joystick.btnStart[1] = False #reset flag
+            if 1 == self.joystick.btnStart[0]: # button pressed!
+                if self.securityCamMode: # it's on, let's turn it off
+                    self.securityCamMode = False
+                    self.lblSecurityCamMode.setText('Security Cam Mode Off')
+                else: # it's off, let's turn it on
+                    self.securityCamMode = True
+                    self.lblSecurityCamMode.setText('Security Cam Mode On')
+        # Right/Left Hat buttons
+        if self.joystick.absHatX[0] != 0 and self.hatXDown == False:
+            self.hatXDown = True
+            if self.joystick.absHatX[0] == self.joystick.absHatX[1]: # left hat button pressed
+                self.securityCamLeftPos = pan # capture pan position
+            else: # right hat button pressed
+                self.securityCamRightPos = pan # capture pan position
+        elif self.joystick.absHatX[0] == 0 and self.hatXDown == True: # button up - reset flag
+            self.hatXDown = False
+
+        # Check Button B for reset LED to 0
         if self.joystick.btnB[1]:  # new button activity (either pressed or released)
             self.joystick.btnB[1] = False  # reset flag
             if 1 == self.joystick.btnB[0]: # button pressed!
                 self.pwrLED = ledDefault
-        # Check Right Trigger for Tilt Servo Down decrement
+        # Check Right Trigger for LED decrement
         if self.joystick.btnTR[1]:  # new button activity (either pressed or released)
             self.joystick.btnTR[1] = False  # reset flag
             if 1 == self.joystick.btnTR[0]: # button down
@@ -152,7 +195,7 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
             else:
                 self.ledDecButtonDown = False
 
-        # Check Left Trigger for Tilt Servo Up increment
+        # Check Left Trigger for LED increment
         if self.joystick.btnTL[1]:  # new button activity (either pressed or released)
             self.joystick.btnTL[1] = False  # reset flag
             if 1 == self.joystick.btnTL[0]: # button down
