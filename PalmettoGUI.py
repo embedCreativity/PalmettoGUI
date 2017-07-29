@@ -157,15 +157,13 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
                     self.lblMotorPower.setText('Motor Power On')
                     self.Send('mon')
         # Check Back Button for SlowMo
-        if self.joystick.btnSelect[1]:  # new button activity (either pressed or released)
-            self.joystick.btnSelect[1] = False  # reset flag
-            if 1 == self.joystick.btnSelect[0]: # button pressed!
-                if self.slowMo: # it's on, let's turn it off
+        if self.joystick.btnA[1]:  # new button activity (either pressed or released)
+            self.joystick.btnA[1] = False  # reset flag
+            if 1 == self.joystick.btnA[0]: # button pressed!
                     self.slowMo = False
-                    self.lblSlowMo.setText('SlowMo Off')
-                else: # it's off, let's turn it on
-                    self.slowMo = True
-                    self.lblSlowMo.setText('SlowMo On')
+            else: # button released!
+                self.slowMo = True
+
         # Toggle Security Cam Mode
         if self.joystick.btnStart[1]: # new button activity (either pressed or released)
             self.joystick.btnStart[1] = False #reset flag
