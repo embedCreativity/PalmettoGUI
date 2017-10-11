@@ -78,6 +78,9 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         self.securityCamIncAmount = 2
         self.securityCamIncAmountMin = 1
         self.securityCamIncAmountMax = 10
+        self.chargerDockOpen = False
+        self.chargerDockOpenPos = 550
+        self.chargerDockClosedPos = 1205
 
     def ServiceHeartBeat(self, value):
 
@@ -174,6 +177,19 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
                 else: # it's off, let's turn it on
                     self.securityCamMode = True
                     self.lblSecurityCamMode.setText('Security Cam Mode On')
+
+        # Toggle Charger Port
+        if self.joystick.btnSelect[1]: # new button activity (either pressed or released)
+            self.joystick.btnSelect[1] = False #reset flag
+            if 1 == self.joystick.btnSelect[0]: # button pressed!
+                if self.chargerDockOpen: # it's open, let's close it
+                    self.chargerDockOpen = False
+                    self.lblChargerDoor.setText('Charger Door Closed')
+                    self.Send('setservo 3 {}'.format(self.chargerDockClosedPos))
+                else: # it's closed, let's open it
+                    self.chargerDockOpen = True
+                    self.lblChargerDoor.setText('Charger Door Open')
+                    self.Send('setservo 3 {}'.format(self.chargerDockOpenPos))
 
         # Right/Left Hat buttons
         if self.joystick.absHatX[0] != 0 and self.hatXDown == False:

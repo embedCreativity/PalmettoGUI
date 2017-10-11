@@ -4,7 +4,7 @@ import socket
 import sys
 import time
 
-TCP_IP = '192.168.1.60'
+TCP_IP = '192.168.0.60'
 DEFAULT_PORT = 49000
 DEFAULT_MSG = 'Go'
 PERIOD_BEFORE_CLOSE = 2 # seconds
