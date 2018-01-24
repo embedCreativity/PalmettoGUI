@@ -80,7 +80,7 @@ class MainDialog(QDialog, QtUI.Ui_Dialog):
         self.securityCamIncAmountMax = 10
         self.chargerDockOpen = False
         self.chargerDockOpenPos = 550
-        self.chargerDockClosedPos = 1205
+        self.chargerDockClosedPos = 1200
 
     def ServiceHeartBeat(self, value):
 
